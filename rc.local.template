@@ -1,0 +1,14 @@
+
+# prevent macbook from waking immediately after going to sleep" >> /etc/rc.d/rc.local
+echo LID0 > /proc/acpi/wakeup
+echo XHC1 > /proc/acpi/wakeup
+
+if [[ $(awk -F ":" '$2 ~ /^DIS$/ {print $2}' /sys/kernel/debug/vgaswitcheroo/switch) == "+" ]]
+then
+	# discrete gpu is active, recommend that the user runs gpu-switch and reboots
+	/usr/local/notifyfromroot.sh "Discrete GPU Enabled" "The discrete gpu is enabled. You should run gpu-switch -i and reboot."
+
+	exit 1
+else
+	# integraged cpu is active, set up power savings	
+fi
